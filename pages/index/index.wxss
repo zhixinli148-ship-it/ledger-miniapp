@@ -1,0 +1,155 @@
+/* 首页 */
+
+/* ---- 概览卡片 ---- */
+.overview {
+  margin-top: 24rpx;
+  padding: 44rpx 40rpx 38rpx;
+}
+
+.ov-label {
+  font-size: 24rpx;
+}
+
+.ov-balance {
+  font-size: 76rpx;
+  font-weight: 600;
+  color: var(--text-1);
+  margin: 10rpx 0 38rpx;
+}
+
+.ov-row {
+  display: flex;
+  align-items: center;
+}
+
+.ov-item {
+  flex: 1;
+}
+
+.ov-key {
+  font-size: 23rpx;
+  margin-bottom: 6rpx;
+}
+
+.ov-val {
+  font-size: 32rpx;
+}
+
+.ov-divider {
+  width: 1rpx;
+  height: 52rpx;
+  background: var(--hairline);
+  margin: 0 28rpx;
+}
+
+/* ---- 区块标题 ---- */
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 46rpx 8rpx 20rpx;
+}
+
+.section-title {
+  font-size: 29rpx;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.section-count {
+  font-size: 23rpx;
+}
+
+/* ---- 按日分组 ---- */
+.day-group {
+  margin-bottom: 26rpx;
+}
+
+.day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12rpx 14rpx;
+}
+
+.day-date {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.day-sum {
+  font-size: 22rpx;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- 列表卡片 ---- */
+.list-card {
+  padding: 6rpx 0;
+  overflow: hidden;
+}
+
+.rec-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  position: relative;
+  transition: background-color var(--dur-press) ease-out;
+}
+
+.rec-item:active {
+  background: rgba(20, 23, 31, 0.04);
+}
+
+/* 分隔线：左侧对齐图标后 */
+.rec-item::after {
+  content: "";
+  position: absolute;
+  left: 92rpx;
+  right: 32rpx;
+  bottom: 0;
+  height: 1rpx;
+  background: var(--hairline);
+}
+
+.rec-item:last-child::after {
+  display: none;
+}
+
+.rec-emoji {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1rpx solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  flex-shrink: 0;
+}
+
+.rec-main {
+  flex: 1;
+  margin-left: 24rpx;
+  min-width: 0;
+}
+
+.rec-name {
+  font-size: 29rpx;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.rec-note {
+  font-size: 22rpx;
+  margin-top: 4rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rec-amount {
+  font-size: 32rpx;
+  margin-left: 16rpx;
+  flex-shrink: 0;
+}

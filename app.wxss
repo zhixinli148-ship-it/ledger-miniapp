@@ -1,0 +1,384 @@
+/* app.wxss —— 设计系统
+ * 依据 baseline-ui / fixing-motion-performance 约束重构：
+ * - 仅一个强调色，无装饰性渐变，无发光作为主要交互提示
+ * - 动画只使用 transform / opacity（合成层属性），入场 ease-out，交互反馈 ≤200ms
+ * - 固定 z-index 层级，不使用任意值
+ * - 数据统一 tabular-nums，不随意调整 letter-spacing
+ * - 尊重 safe-area-inset
+ */
+
+page {
+  /* ---- 底色与光晕（玻璃需要有东西可折射）---- */
+  --bg: #f2f4f9;
+  --wash-blue: rgba(158, 196, 255, 0.42);
+  --wash-warm: rgba(255, 196, 214, 0.34);
+  --wash-mint: rgba(150, 226, 205, 0.42);
+
+  /* ---- 玻璃层 ---- */
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-strong: rgba(255, 255, 255, 0.86);
+  --glass-border: rgba(255, 255, 255, 0.92);
+  --hairline: rgba(20, 23, 31, 0.06);
+  --hairline-strong: rgba(20, 23, 31, 0.12);
+
+  /* ---- 文字 ---- */
+  --text-1: #14171f;
+  --text-2: #5a6272;
+  --text-3: #9aa2b2;
+
+  /* ---- 语义色（唯一强调色 + 收支语义）---- */
+  --accent: #4f6ef7;
+  --accent-press: #3f5ae0;
+  --accent-soft: rgba(79, 110, 247, 0.10);
+  --income: #10b981;
+  --expense: #ef4444;
+  --danger-soft: rgba(239, 68, 68, 0.09);
+
+  /* ---- 圆角 ---- */
+  --r-sm: 16rpx;
+  --r-md: 24rpx;
+  --r-lg: 32rpx;
+  --r-xl: 40rpx;
+
+  /* ---- 间距 ---- */
+  --s-1: 8rpx;
+  --s-2: 16rpx;
+  --s-3: 24rpx;
+  --s-4: 32rpx;
+  --s-5: 48rpx;
+
+  /* ---- 阴影（克制，仅两级）---- */
+  --shadow-card: 0 6rpx 28rpx rgba(24, 32, 54, 0.07);
+  --shadow-float: 0 12rpx 36rpx rgba(24, 32, 54, 0.14);
+
+  /* ---- z-index 层级（固定，不用任意值）---- */
+  --z-base: 1;
+  --z-nav: 10;
+  --z-tabbar: 100;
+  --z-overlay: 1000;
+
+  /* ---- 动效时长 ---- */
+  --dur-press: 120ms;
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-enter: 300ms;
+
+  background-color: var(--bg);
+  color: var(--text-1);
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+
+/* ============ 背景光晕层 ============ */
+
+.page-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.page-bg::before,
+.page-bg::after,
+.page-bg .wash {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  /* 静态模糊，不参与动画 */
+  filter: blur(70rpx);
+}
+
+.page-bg::before {
+  width: 560rpx;
+  height: 560rpx;
+  top: -200rpx;
+  left: -150rpx;
+  background: var(--wash-blue);
+}
+
+.page-bg::after {
+  width: 520rpx;
+  height: 520rpx;
+  bottom: -160rpx;
+  right: -170rpx;
+  background: var(--wash-warm);
+}
+
+.page-bg .wash {
+  width: 420rpx;
+  height: 420rpx;
+  top: 38%;
+  left: 30%;
+  background: var(--wash-mint);
+}
+
+/* ============ 玻璃卡片 ============ */
+
+.glass {
+  background: var(--glass);
+  border: 1rpx solid var(--glass-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(28rpx) saturate(160%);
+  -webkit-backdrop-filter: blur(28rpx) saturate(160%);
+}
+
+.glass-strong {
+  background: var(--glass-strong);
+  border: 1rpx solid var(--glass-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(36rpx) saturate(180%);
+  -webkit-backdrop-filter: blur(36rpx) saturate(180%);
+}
+
+/* 玻璃顶部细高光（静态，非动画） */
+.glass-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-sheen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1rpx;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* ============ 布局容器 ============ */
+
+.container {
+  position: relative;
+  z-index: var(--z-base);
+  padding: 0 32rpx;
+  box-sizing: border-box;
+}
+
+/* ============ 导航栏 ============ */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0 32rpx 16rpx;
+  box-sizing: border-box;
+}
+
+/* 带返回键的页面（详情）给标题让位 */
+.nav.has-back {
+  padding-left: 116rpx;
+}
+
+/* 玻璃底：置顶时完全透明，滚动后淡入。
+ * 只淡入淡出 opacity，不改变 blur 半径。 */
+.nav-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(24rpx) saturate(180%);
+  -webkit-backdrop-filter: blur(24rpx) saturate(180%);
+  border-bottom: 1rpx solid var(--hairline);
+  opacity: 0;
+  transition: opacity var(--dur-base) ease-out;
+  pointer-events: none;
+}
+
+.nav.is-scrolled .nav-bg {
+  opacity: 1;
+}
+
+/* 标题：置顶时是「大标题」，滚动后收拢回常规字号。
+ * 用 scale 而不是 font-size —— 不触发重排，也不改变文本流。
+ * 锚点取左下角，放大时只向上生长，不会顶到状态栏。 */
+.nav-title {
+  position: relative;
+  z-index: 1;
+  font-size: 32rpx;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-1);
+  transform-origin: left bottom;
+  transform: scale(1.35);
+  transition: transform var(--dur-base) ease-out;
+}
+
+.nav.is-scrolled .nav-title {
+  transform: scale(1);
+}
+
+/* ============ 文字工具类 ============ */
+
+.t2 { color: var(--text-2); }
+.t3 { color: var(--text-3); }
+
+/* 数据统一等宽数字 */
+.amount {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.income { color: var(--income); }
+.expense { color: var(--expense); }
+
+/* ============ 动效基元（仅 transform / opacity）============ */
+
+/* 入场：上浮淡入 */
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 入场：纯淡入 */
+@keyframes enter-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 入场：轻微放大（用于按钮/图标等小元素） */
+@keyframes enter-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.anim-up {
+  animation: enter-up var(--dur-enter) ease-out both;
+}
+
+.anim-fade {
+  animation: enter-fade var(--dur-enter) ease-out both;
+}
+
+.anim-pop {
+  animation: enter-pop var(--dur-fast) ease-out both;
+}
+
+/* 交互按压反馈（≤200ms） */
+.pressable {
+  transition: transform var(--dur-press) ease-out, opacity var(--dur-press) ease-out;
+}
+
+.pressable:active {
+  transform: scale(0.97);
+  opacity: 0.92;
+}
+
+/* ============ 空状态（一个明确的下一步动作）============ */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 空状态常常紧跟在上一个卡片后面（概览卡 / 总额卡都只有 margin-top），
+   * 不留间距的话两张圆角卡片会贴在一起，中间收成掐腰，看着像重叠。 */
+  margin-top: var(--s-3);
+  padding: 88rpx 40rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: var(--r-xl);
+  background: var(--glass-strong);
+  border: 1rpx solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  margin-bottom: 28rpx;
+}
+
+.empty-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.empty-desc {
+  font-size: 25rpx;
+  color: var(--text-2);
+  margin-top: 10rpx;
+}
+
+.empty-action {
+  margin-top: 32rpx;
+  padding: 20rpx 44rpx;
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: #fff;
+  font-size: 27rpx;
+  font-weight: 600;
+  transition: transform var(--dur-press) ease-out;
+}
+
+.empty-action:active {
+  transform: scale(0.96);
+}
+
+/* 底部留白 */
+.bottom-space {
+  height: calc(200rpx + env(safe-area-inset-bottom));
+}
+
+/* ============ 减弱动态效果降级 ============
+ * 页面容器加 .reduce-motion 时，关闭所有入场动画与过渡。
+ * 对应 gsap-core 的 prefers-reduced-motion 处理与 baseline-ui 的无障碍要求。
+ */
+
+.reduce-motion .anim-up,
+.reduce-motion .anim-fade,
+.reduce-motion .anim-pop {
+  animation: none;
+}
+
+.reduce-motion .pressable,
+.reduce-motion .rec-item,
+.reduce-motion .cate-item,
+.reduce-motion .type-item,
+.reduce-motion .tp-item,
+.reduce-motion .save-btn,
+.reduce-motion .delete-btn,
+.reduce-motion .nav-back,
+.reduce-motion .nav-bg,
+.reduce-motion .nav-title {
+  transition: none;
+}
+
+.reduce-motion .pressable:active,
+.reduce-motion .cate-item:active,
+.reduce-motion .save-btn:active,
+.reduce-motion .delete-btn:active,
+.reduce-motion .nav-back:active {
+  transform: none;
+}
+
+.reduce-motion .bar-fill {
+  transition: none;
+}
+

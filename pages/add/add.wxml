@@ -1,0 +1,101 @@
+<view class="page-bg">
+  <view class="wash"></view>
+</view>
+
+<!-- 自定义导航：置顶为大标题，滚动后玻璃底淡入、标题收拢 -->
+<view
+  class="nav {{navScrolled ? 'is-scrolled' : ''}} {{reduceMotion ? 'reduce-motion' : ''}}"
+  style="padding-top: {{statusBarHeight + 14}}px;"
+>
+  <view class="nav-bg"></view>
+  <text class="nav-title">记一笔</text>
+</view>
+
+<!-- 内容整块挂在 runs 的 key 上。
+ * 小程序里节点复用后 CSS 入场动画不会自己重播，
+ * 每次切回本页时换一个 key，让这块重建，动画就会从头播一遍。 -->
+<block wx:for="{{runs}}" wx:key="*this">
+<view class="container {{reduceMotion ? 'reduce-motion' : ''}}" style="padding-top: {{navHeight}}px;">
+
+  <!-- 支出 / 收入 切换 -->
+  <view class="type-switch glass anim-fade">
+    <view
+      class="type-item {{type === 'expense' ? 'active-expense' : ''}}"
+      data-type="expense"
+      bindtap="switchType"
+    >支出</view>
+    <view
+      class="type-item {{type === 'income' ? 'active-income' : ''}}"
+      data-type="income"
+      bindtap="switchType"
+    >收入</view>
+  </view>
+
+  <!-- 金额输入 -->
+  <view class="glass glass-sheen amount-card anim-up" style="animation-delay: 40ms;">
+    <view class="amount-label t3">金额</view>
+    <view class="amount-row">
+      <text class="currency">¥</text>
+      <input
+        class="amount-input"
+        type="digit"
+        value="{{amount}}"
+        placeholder="0.00"
+        placeholder-class="amount-ph"
+        focus="{{autoFocus}}"
+        bindinput="onAmountInput"
+        confirm-type="done"
+      />
+    </view>
+  </view>
+
+  <!-- 分类 -->
+  <view class="section-title">分类</view>
+
+  <view class="cate-grid">
+    <view
+      wx:for="{{categories}}"
+      wx:key="id"
+      class="cate-item anim-pop {{categoryId === item.id ? 'cate-active' : ''}}"
+      style="animation-delay: {{item.delay}}ms;"
+      data-id="{{item.id}}"
+      bindtap="pickCategory"
+    >
+      <view class="cate-emoji">{{item.emoji}}</view>
+      <text class="cate-name">{{item.name}}</text>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="glass field-card anim-up" style="animation-delay: 120ms;">
+    <text class="field-icon">📝</text>
+    <input
+      class="field-input"
+      value="{{note}}"
+      placeholder="添加备注"
+      placeholder-class="field-ph"
+      maxlength="30"
+      bindinput="onNoteInput"
+    />
+  </view>
+
+  <!-- 日期 -->
+  <view class="glass field-card anim-up" style="animation-delay: 160ms;">
+    <text class="field-icon">📅</text>
+    <picker mode="date" value="{{date}}" end="{{maxDate}}" bindchange="onDateChange" class="picker">
+      <view class="field-value">{{dateLabel}}</view>
+    </picker>
+  </view>
+
+  <!-- 保存 -->
+  <view
+    class="save-btn anim-up {{canSave ? '' : 'save-disabled'}}"
+    style="animation-delay: 200ms;"
+    bindtap="save"
+  >
+    <text>保存</text>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
+</block>

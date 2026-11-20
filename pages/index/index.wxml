@@ -1,0 +1,88 @@
+<view class="page-bg">
+  <view class="wash"></view>
+</view>
+
+<!-- 自定义导航：置顶为大标题，滚动后玻璃底淡入、标题收拢 -->
+<view
+  class="nav {{navScrolled ? 'is-scrolled' : ''}} {{reduceMotion ? 'reduce-motion' : ''}}"
+  style="padding-top: {{statusBarHeight + 14}}px;"
+>
+  <view class="nav-bg"></view>
+  <text class="nav-title">我的账本</text>
+</view>
+
+<!-- 内容整块挂在 runs 的 key 上。
+ * 小程序里节点复用后 CSS 入场动画不会自己重播，
+ * 每次切回本页时换一个 key，让这块重建，动画就会从头播一遍。 -->
+<block wx:for="{{runs}}" wx:key="*this">
+<view class="container {{reduceMotion ? 'reduce-motion' : ''}}" style="padding-top: {{navHeight}}px;">
+
+  <!-- 概览卡片 -->
+  <view class="glass glass-sheen overview anim-up">
+    <view class="ov-label t3">本月结余</view>
+    <view class="ov-balance amount">¥ {{displayBalance}}</view>
+
+    <view class="ov-row">
+      <view class="ov-item">
+        <view class="ov-key t3">收入</view>
+        <view class="ov-val amount income">+{{summary.income}}</view>
+      </view>
+      <view class="ov-divider"></view>
+      <view class="ov-item">
+        <view class="ov-key t3">支出</view>
+        <view class="ov-val amount expense">-{{summary.expense}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 明细列表 -->
+  <view class="section-head" wx:if="{{groups.length}}">
+    <text class="section-title">明细</text>
+    <text class="section-count t3">{{totalCount}} 笔</text>
+  </view>
+
+  <block wx:for="{{groups}}" wx:key="date" wx:for-item="group">
+    <view class="day-group">
+      <view class="day-head">
+        <text class="day-date t2">{{group.dateLabel}}</text>
+        <text class="day-sum t3">
+          <text wx:if="{{group.dayIncome > 0}}" class="income">+{{group.dayIncomeText}}</text>
+          <text wx:if="{{group.dayIncome > 0 && group.dayExpense > 0}}"> · </text>
+          <text wx:if="{{group.dayExpense > 0}}" class="expense">-{{group.dayExpenseText}}</text>
+        </text>
+      </view>
+
+      <view class="glass list-card">
+        <view
+          wx:for="{{group.items}}"
+          wx:key="id"
+          wx:for-item="item"
+          class="rec-item anim-up"
+          style="animation-delay: {{item.delay}}ms;"
+          data-id="{{item.id}}"
+          bindtap="goDetail"
+        >
+          <view class="rec-emoji">{{item.emoji}}</view>
+          <view class="rec-main">
+            <view class="rec-name">{{item.catName}}</view>
+            <view class="rec-note t3" wx:if="{{item.note}}">{{item.note}}</view>
+          </view>
+          <view class="rec-amount amount {{item.type === 'income' ? 'income' : 'expense'}}">
+            {{item.type === 'income' ? '+' : '-'}}{{item.amountText}}
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 空状态：一个明确的下一步 -->
+  <view class="glass empty anim-up" style="animation-delay: 60ms;" wx:if="{{!groups.length}}">
+    <view class="empty-icon">📒</view>
+    <view class="empty-title">还没有记账</view>
+    <view class="empty-desc">记录第一笔收支，开始看清钱去哪了</view>
+    <view class="empty-action" bindtap="goAdd">记第一笔</view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
+</block>

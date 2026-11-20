@@ -1,0 +1,187 @@
+/* 记一笔 */
+
+/* ---- 支出/收入切换 ---- */
+.type-switch {
+  display: flex;
+  padding: 8rpx;
+  margin-top: 24rpx;
+}
+
+.type-item {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: var(--text-3);
+  border-radius: var(--r-md);
+  transition: color var(--dur-fast) ease-out, background-color var(--dur-fast) ease-out;
+}
+
+.type-item.active-expense {
+  color: #fff;
+  background: var(--expense);
+}
+
+.type-item.active-income {
+  color: #fff;
+  background: var(--income);
+}
+
+/* ---- 金额卡片 ---- */
+.amount-card {
+  margin-top: 24rpx;
+  padding: 36rpx 40rpx 42rpx;
+}
+
+.amount-label {
+  font-size: 24rpx;
+}
+
+.amount-row {
+  display: flex;
+  align-items: baseline;
+  margin-top: 10rpx;
+}
+
+.currency {
+  font-size: 46rpx;
+  color: var(--text-2);
+  margin-right: 16rpx;
+  font-weight: 500;
+}
+
+.amount-input {
+  flex: 1;
+  font-size: 84rpx;
+  font-weight: 600;
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+  height: 106rpx;
+}
+
+.amount-ph {
+  color: rgba(20, 23, 31, 0.20);
+  font-weight: 500;
+}
+
+/* ---- 分段标题 ---- */
+.section-title {
+  margin: 44rpx 8rpx 20rpx;
+  font-size: 29rpx;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+/* ---- 分类网格 ---- */
+.cate-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18rpx;
+}
+
+.cate-item {
+  width: calc((100% - 54rpx) / 4);
+  padding: 24rpx 0 18rpx;
+  border-radius: var(--r-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+  background: var(--glass);
+  border: 1rpx solid var(--glass-border);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+  transition: transform var(--dur-press) ease-out,
+              background-color var(--dur-fast) ease-out,
+              border-color var(--dur-fast) ease-out;
+}
+
+.cate-item:active {
+  transform: scale(0.95);
+}
+
+.cate-active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.cate-emoji {
+  font-size: 40rpx;
+  line-height: 1;
+}
+
+.cate-name {
+  font-size: 22rpx;
+  color: var(--text-2);
+}
+
+.cate-active .cate-name {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ---- 备注 / 日期 ---- */
+.field-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 28rpx 32rpx;
+  margin-top: 18rpx;
+}
+
+.field-icon {
+  font-size: 32rpx;
+}
+
+.field-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--text-1);
+}
+
+.field-ph {
+  color: var(--text-3);
+}
+
+.picker {
+  flex: 1;
+}
+
+.field-value {
+  font-size: 28rpx;
+  color: var(--text-1);
+}
+
+/* ---- 保存按钮 ---- */
+.save-btn {
+  margin-top: 44rpx;
+  height: 100rpx;
+  border-radius: var(--r-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 8rpx 24rpx rgba(79, 110, 247, 0.24);
+  transition: transform var(--dur-press) ease-out,
+              background-color var(--dur-press) ease-out;
+}
+
+.save-btn:active {
+  transform: scale(0.98);
+  background: var(--accent-press);
+}
+
+.save-disabled {
+  background: rgba(20, 23, 31, 0.06);
+  color: var(--text-3);
+  box-shadow: none;
+}
+
+.save-disabled:active {
+  transform: none;
+  background: rgba(20, 23, 31, 0.06);
+}

@@ -1,0 +1,54 @@
+<!-- 自定义底部导航：胶囊主导航 + 独立圆形动作按钮 -->
+<view class="tabbar-wrap {{reduceMotion ? 'reduce-motion' : ''}}">
+  <view class="tabbar">
+
+    <!-- 胶囊容器 -->
+    <view class="pill">
+
+      <!-- 选中底滑块：占满一个槽位、按槽位位移，只驱动 transform / opacity -->
+      <view
+        class="tab-glider"
+        style="width: {{100 / tabs.length}}%; transform: translateX({{selected * 100}}%); opacity: {{selected >= tabs.length ? 0 : 1}};"
+      >
+        <view class="glider-fill"></view>
+      </view>
+
+      <view
+        wx:for="{{tabs}}"
+        wx:key="pagePath"
+        class="tab-item {{selected === index ? 'active' : ''}}"
+        data-path="{{item.pagePath}}"
+        data-index="{{index}}"
+        bindtap="switchTab"
+      >
+        <view class="icon-box">
+          <view wx:if="{{item.icon === 'list'}}" class="ic-list">
+            <view class="ic-row"></view>
+            <view class="ic-row"></view>
+            <view class="ic-row"></view>
+          </view>
+          <view wx:elif="{{item.icon === 'chart'}}" class="ic-chart">
+            <view class="ic-bar b1"></view>
+            <view class="ic-bar b2"></view>
+            <view class="ic-bar b3"></view>
+          </view>
+        </view>
+        <text class="tab-text">{{item.text}}</text>
+      </view>
+    </view>
+
+    <!-- 独立圆形动作按钮 -->
+    <view
+      class="tab-fab {{selected === tabs.length ? 'active' : ''}}"
+      data-path="{{action.pagePath}}"
+      data-index="{{tabs.length}}"
+      bindtap="switchTab"
+    >
+      <view class="fab-plus">
+        <view class="plus-h"></view>
+        <view class="plus-v"></view>
+      </view>
+    </view>
+
+  </view>
+</view>

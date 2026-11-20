@@ -1,0 +1,209 @@
+/* 自定义底部导航
+ * 参照 iOS 系统「电话」App 底栏：
+ * - 胶囊容器（全圆角），激活项用一层浅色高亮胶囊包裹图标 + 文字
+ * - 高亮用滑块实现，只在 transform / opacity 上动画
+ * - 主操作拆成独立圆形按钮，与胶囊分离
+ *
+ * 组件默认样式隔离，这里不复用 app.wxss 的类，
+ * 颜色/阴影统一用 var(..., fallback) 取值，保证两种隔离模式都正常。
+ */
+
+.tabbar-wrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-tabbar, 100);
+  padding: 0 24rpx calc(16rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.tabbar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+/* ============ 胶囊容器 ============ */
+
+.pill {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  height: 112rpx;
+  border-radius: 999rpx;
+  background: var(--glass-strong, rgba(255, 255, 255, 0.86));
+  border: 1rpx solid var(--glass-border, rgba(255, 255, 255, 0.92));
+  box-shadow: var(--shadow-float, 0 12rpx 36rpx rgba(24, 32, 54, 0.14));
+  backdrop-filter: blur(36rpx) saturate(180%);
+  -webkit-backdrop-filter: blur(36rpx) saturate(180%);
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+/* ============ 选中底滑块 ============ */
+
+.tab-glider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  /* 只驱动 transform / opacity；时长与下面文字换色的延迟对齐 */
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease-out;
+  will-change: transform;
+}
+
+/* 外层滑块占满整个槽位、按槽位位移；内层才是可见的选中底胶囊。
+ * 胶囊固定宽度居中，这样它能贴合内容，而不是撑满槽位变成一大块色块。 */
+.glider-fill {
+  position: absolute;
+  top: 12rpx;
+  bottom: 12rpx;
+  left: 50%;
+  width: 176rpx;
+  margin-left: -88rpx;
+  border-radius: 999rpx;
+  background: var(--accent, #4f6ef7);
+}
+
+/* ============ 导航项 ============ */
+
+.tab-item {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  color: var(--text-2, #5a6272);
+  /* 滑块约 120ms 时盖住 / 离开文字，颜色到这时才切：
+   * 切早了白字会先压在浅色玻璃上，切晚了灰字会压在 accent 底上。
+   * 进出两个方向共用同一个延迟，写在基类上就够了。 */
+  transition: color 150ms ease-out 120ms;
+}
+
+.tab-item.active {
+  color: #fff;
+}
+
+.tab-text {
+  font-size: 22rpx;
+  line-height: 1;
+  font-weight: 500;
+}
+
+/* ---- 图标：纯 CSS 绘制，实心块面贴近系统图标 ---- */
+
+.icon-box {
+  width: 46rpx;
+  height: 46rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ic-list {
+  width: 36rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.ic-row {
+  height: 6rpx;
+  border-radius: 6rpx;
+  background: currentColor;
+}
+
+.ic-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6rpx;
+  height: 34rpx;
+}
+
+.ic-bar {
+  width: 8rpx;
+  border-radius: 4rpx;
+  background: currentColor;
+}
+
+.b1 { height: 18rpx; }
+.b2 { height: 34rpx; }
+.b3 { height: 26rpx; }
+
+/* ============ 独立圆形动作按钮 ============ */
+
+.tab-fab {
+  flex: none;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background: var(--accent, #4f6ef7);
+  box-shadow: var(--shadow-float, 0 12rpx 36rpx rgba(24, 32, 54, 0.14));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  transition: transform var(--dur-press, 120ms) ease-out,
+              background-color var(--dur-press, 120ms) ease-out,
+              box-shadow var(--dur-fast, 140ms) ease-out;
+}
+
+.tab-fab:active {
+  transform: scale(0.93);
+  background: var(--accent-press, #3f5ae0);
+}
+
+/* 停留在「记一笔」页时给一圈描边，明确当前位置 */
+.tab-fab.active {
+  box-shadow: 0 0 0 6rpx rgba(79, 110, 247, 0.18),
+              var(--shadow-float, 0 12rpx 36rpx rgba(24, 32, 54, 0.14));
+}
+
+.fab-plus {
+  position: relative;
+  width: 34rpx;
+  height: 34rpx;
+}
+
+/* 两条实心矩形拼加号，比文字渲染更稳定 */
+.plus-h,
+.plus-v {
+  position: absolute;
+  background: #fff;
+  border-radius: 3rpx;
+}
+
+.plus-h {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 5rpx;
+  margin-top: -2.5rpx;
+}
+
+.plus-v {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 5rpx;
+  margin-left: -2.5rpx;
+}
+
+/* ============ 减弱动态效果降级 ============ */
+
+.reduce-motion .tab-glider,
+.reduce-motion .tab-item,
+.reduce-motion .tab-fab {
+  transition: none;
+}
+
+.reduce-motion .tab-fab:active {
+  transform: none;
+}

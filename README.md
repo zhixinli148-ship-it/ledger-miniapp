@@ -7,4 +7,9 @@
 - 统计：按月筛选、分类占比排行与进度条
 - 详情：查看单笔、支持删除
 
-技术栈：WXML / WXSS / JavaScript，自定义 TabBar，GSAP 动效原则迁移。
+技术栈：WXML / WXSS / JavaScript，自定义 TabBar，GSAP 动效原则迁移（无 DOM 环境）。
+设计系统见 DESIGN.md。导入微信开发者工具即可运行（AppID 选测试号）。
+
+---
+
+> 个人项目，仅供展示。

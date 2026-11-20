@@ -1,0 +1,67 @@
+<view class="page-bg">
+  <view class="wash"></view>
+</view>
+
+<!-- 自定义导航：置顶为大标题，滚动后玻璃底淡入、标题收拢 -->
+<view
+  class="nav has-back {{navScrolled ? 'is-scrolled' : ''}} {{reduceMotion ? 'reduce-motion' : ''}}"
+  style="padding-top: {{statusBarHeight + 14}}px;"
+>
+  <view class="nav-bg"></view>
+  <view class="nav-back" bindtap="goBack">
+    <view class="back-arrow"></view>
+  </view>
+  <text class="nav-title">详情</text>
+</view>
+
+<view class="container {{reduceMotion ? 'reduce-motion' : ''}}" style="padding-top: {{navHeight}}px;" wx:if="{{record}}">
+
+  <!-- 金额头卡 -->
+  <view class="glass glass-sheen head-card anim-up">
+    <view class="head-emoji">{{record.emoji}}</view>
+    <view class="head-amount amount {{record.type === 'income' ? 'income' : 'expense'}}">
+      {{record.type === 'income' ? '+' : '-'}}¥{{record.amountText}}
+    </view>
+    <view class="head-cat t2">{{record.catName}} · {{record.typeLabel}}</view>
+  </view>
+
+  <!-- 信息 -->
+  <view class="glass info-card anim-up" style="animation-delay: 60ms;">
+    <view class="info-row">
+      <text class="info-k t3">分类</text>
+      <text class="info-v">{{record.emoji}} {{record.catName}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-k t3">金额</text>
+      <text class="info-v amount">¥{{record.amountText}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-k t3">日期</text>
+      <text class="info-v">{{record.date}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-k t3">备注</text>
+      <text class="info-v">{{record.note || '—'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-k t3">记录时间</text>
+      <text class="info-v">{{record.createdText}}</text>
+    </view>
+  </view>
+
+  <!-- 删除：破坏性操作，走系统确认弹窗 -->
+  <view class="delete-btn anim-up" style="animation-delay: 120ms;" bindtap="remove">
+    删除这笔记录
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
+
+<view class="container" style="padding-top: {{navHeight}}px;" wx:else>
+  <view class="glass empty anim-up">
+    <view class="empty-icon">🔍</view>
+    <view class="empty-title">找不到这笔记录</view>
+    <view class="empty-desc">它可能已经被删除了</view>
+    <view class="empty-action" bindtap="goBack">返回明细</view>
+  </view>
+</view>
